@@ -37,7 +37,7 @@ _Write a summary of your project._
 
 ## General Background Information
 _Provide enough background on your topic that others can understand the why and how of your analysis_ 
-[Last year](https://www.fox7austin.com/news/austin-named-city-with-15th-biggest-homicide-rate-problem-study), Austin was ranked among the top US cities with a problem in homicide rate. Earlier [this year](https://www.kvue.com/article/news/local/austin-crime-rate-drops-2024-2020-comparison/269-b62042b7-a6f2-4224-87ff-ede655a37912), the claim was made that crime has dropped to a new low since 2021. The intention of this analysis will be to investigate both claims, and gain a better understanding of Austin's criminal activity.
+[Last year](https://www.fox7austin.com/news/austin-named-city-with-15th-biggest-homicide-rate-problem-study), Austin was ranked among the top US cities with a problem in homicide rate. Earlier [this year](https://www.kvue.com/article/news/local/austin-crime-rate-drops-2024-2020-comparison/269-b62042b7-a6f2-4224-87ff-ede655a37912), the claim was made that crime has dropped to a new low since 2021. The intention of this analysis will be to investigate both claims, and gain a better understanding of Austin's criminal activity. While these claims will be in mind throughout the steps of the analysis, I intend to approach it from more of an exploratory standpoint, so not to only go out and investigate the claims but really any insights that can be gleaned around Austin criminal activity and how it has changed over time.
 What the analysis will not cover would be things like *causes* of the changes in crime, at least not directly. I may identify shifts that could inform the cause, but the goal will not be to drill down into every potential socioeconomic factor and pick the primary drivers, instead simply to observe what crime in the city of Austin looks like and what we might be able to expect going forward. Aside from resources outlined in our course resources, I was hoping to also draw from this [book](https://otexts.com/fpp2/index.html). It's not one I have used before but it had been recommended to me previously and I would like to learn more about time series and forecasting in general.
 
 ## Description of data and data source
@@ -51,7 +51,7 @@ d1 <- read.csv(here('data','raw-data','Crime_Reports_20240604.csv'))
 summary(d1)
 head(d1)
 ```
-The data several data and time fields, many of which are character strings meaning they will need to be cleaned/recoded. The rest of the fields are mostly classification variables and location information, but with 2,470,867 there is quite a bit of opportunity for frequency and classification analysis.
+The data has several data and time fields, many of which are character strings meaning they will need to be cleaned/recoded. The rest of the fields are mostly classification variables and location information, but with 2,470,867 there is quite a bit of opportunity for frequency and classification analysis.
 
 ## Questions/Hypotheses to be addressed
 _State the research questions you plan to answer with this analysis._
