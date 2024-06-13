@@ -21,7 +21,7 @@ Load needed packages.\
 
 ```{r}
 #install.packages(pacman)
-pacman::p_load(tidyverse,lubridate,skimr,here)
+pacman::p_load(tidyverse,lubridate,skimr,here, stringr)
 ```
 
 # Data loading
@@ -29,7 +29,7 @@ pacman::p_load(tidyverse,lubridate,skimr,here)
 ```{r}
 # path to data
 # note the use of the here() package and not absolute paths
-data_location <- here::here("data","raw-data","raw_crime_060424.csv")
+data_location <- here::here("data","raw-data","raw-crime-060424.csv")
 rawdata <- read.csv(data_location, TRUE)
 ```
 
@@ -87,14 +87,44 @@ unique(rawdata$Location.Type)
 
 # Cleaning
 
-By inspecting the data as done above, we find some problems that need addressing:
+By inspecting the data as done above, we find some problems that need addressing:\
 
+### Dates and Times
+
+We have six time related fields in this dataset: Occurred.Date.Time, Occurred.Date, Occurred.Time, Report.Date.Time, Report.Date, and Report.Time.\
+- The Date-Time and Date variables were read in as string, and the two Time variables were read in as numeric.
+So that we can treat these variables as actual representations of a point in time, we will need to re-code them into date, time, and date-time values.\
+- Many of the variables have missing or empty values where they shouldn't.
+For example, there are some instances where the Occurred.Date.Time variable is empty, but the Occurred.Date and Occurred.Time values are not.\
+- Finally, there are some instances where the time value does not make any sense. Values like 60 or 70 are impossible to occur and somewhat vague, so special consideration should be taken to account for these as well.
 
 ```{r}
-d1 <- rawdata %>% dplyr::filter( Height != "sixty" ) %>% 
-                  dplyr::mutate(Height = as.numeric(Height))
-skimr::skim(d1)
-hist(d1$Height)
+d1 <- rawdata %>% mutate(
+  test = (str_sub(as.character(Occurred.Time), -2, -1)
+          %>% as.numeric()),
+  Occurred.Date = mdy(Occurred.Date)
+  ,Report.Date = mdy(Report.Date)
+  ,Occurred.Date.Time = parse_date_time(Occurred.Date.Time,'%m/%d/%Y %I:%M:%S %p')
+  ,Report.Date.Time = parse_date_time(Report.Date.Time,'%m/%d/%Y %I:%M:%S %p')
+  ) %>% mutate(
+    Occurred.Time = if_else(
+      is.na(Occurred.Time) | test >= 60, 
+      if_else(
+        Occurred.Date == Report.Date,
+        if_else(
+          is.na(Report.Time), 
+          2359, Report.Time
+          ), 2359
+        ), if_else(
+          Occurred.Time == 2400, 
+          2359, Occurred.Time
+          ) 
+      ) %>% as.character()
+    ) %>% mutate(
+      Occurred.Time = paste0('000',Occurred.Time,'00') %>% 
+        str_sub(.,-6,-1) %>% 
+        parse_time('%H%M%S')
+      ) %>% select(-test)
 ```
 
 Now we see that there is one person with a height of 6.
@@ -164,3 +194,34 @@ saveRDS(processeddata, file = save_data_location)
 Removing anyone who had "faulty" or missing data is one approach.
 It's often not the best.
 based on your question and your analysis approach, you might want to do cleaning differently (e.g. keep individuals with some missing information).
+
+```{r Sandbox}
+#rawdata %>% filter(Occurred.Date.Time == '')
+
+d1 <- rawdata %>% mutate(
+  test = (str_sub(as.character(Occurred.Time), -2, -1)
+          %>% as.numeric()),
+  Occurred.Date = mdy(Occurred.Date)
+  ,Report.Date = mdy(Report.Date)
+  ,Occurred.Date.Time = parse_date_time(Occurred.Date.Time,'%m/%d/%Y %I:%M:%S %p')
+  ,Report.Date.Time = parse_date_time(Report.Date.Time,'%m/%d/%Y %I:%M:%S %p')
+  ) %>% mutate(
+    Occurred.Time = if_else(
+      is.na(Occurred.Time) | test >= 60, 
+      if_else(
+        Occurred.Date == Report.Date,
+        if_else(
+          is.na(Report.Time), 
+          2359, Report.Time
+          ), 2359
+        ), if_else(
+          Occurred.Time == 2400, 
+          2359, Occurred.Time
+          ) 
+      ) %>% as.character()
+    ) %>% mutate(
+      Occurred.Time = paste0('000',Occurred.Time,'00') %>% 
+        str_sub(.,-6,-1) %>% 
+        parse_time('%H%M%S')
+      ) %>% select(-test)
+```
