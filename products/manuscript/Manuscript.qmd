@@ -1,3 +1,136 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:53791af84dddf4d0e7fd1fcad04d4f30f60de0ca33f13bf28575f0f87d12c65f
-size 4288
+---
+title: "Crime in Austin Texas: Exploration, Classification, and Trends"
+subtitle: ""
+author: William Hyltin
+date: "`r Sys.Date()`"
+format:
+  docx:
+    toc: false
+    number-sections: true
+    highlight-style: github
+bibliography: ../../assets/dataanalysis-references.bib
+csl: ../../assets/apa.csl
+---
+
+
+```{r Setup, echo=FALSE, message=FALSE}
+# load a few R packages
+library(here)
+library(knitr)
+```
+
+# Summary/Abstract
+_Write a summary of your project._
+
+
+{{< pagebreak >}}
+
+
+# Introduction 
+
+## General Background Information
+[Last year](https://www.fox7austin.com/news/austin-named-city-with-15th-biggest-homicide-rate-problem-study), Austin was ranked among the top US cities with a problem in homicide rate. Earlier [this year](https://www.kvue.com/article/news/local/austin-crime-rate-drops-2024-2020-comparison/269-b62042b7-a6f2-4224-87ff-ede655a37912), the claim was made that crime has dropped to a new low since 2021. The intention of this analysis will be to investigate both claims, and gain a better understanding of Austin's criminal activity. While these claims will be in mind throughout the steps of the analysis, I intend to approach it from more of an exploratory standpoint, so not to only go out and investigate the claims but really any insights that can be gleaned around Austin criminal activity and how it has changed over time.
+What the analysis will not cover would be things like *causes* of the changes in crime, at least not directly. I may identify shifts that could inform the cause, but the goal will not be to drill down into every potential socioeconomic factor and pick the primary drivers, instead simply to observe what crime in the city of Austin looks like and what we might be able to expect going forward. Aside from resources outlined in our course resources, I was hoping to also draw from this [book](https://otexts.com/fpp2/index.html). It's not one I have used before but it had been recommended to me previously and I would like to learn more about time series and forecasting in general.
+
+## Description of data and data source
+My primary data source will come from [here](https://data.austintexas.gov/Public-Safety/Crime-Reports/fdj4-gpfu/about_data), but I will likely need to pull from other sources as well, potentially finding other cities' crime stats that made the same list of problematic homicide rates, or even Austin's demographic information and statistics like population size.
+
+The raw data has several data and time fields, many of which are character strings meaning they will need to be cleaned/recoded. The rest of the fields are mostly classification variables and location information with some minor cleaning opportunities, but with 2,470,867 there is quite a bit of opportunity for frequency and classification analysis. After cleaning the data (done in a separate file found in this repo) we can take a look a more meaningful look.
+
+```{r Load Processed Data}
+d1 <- readRDS(here('data','processed-data','processedcrime.rds'))
+```
+
+```{r Quick Summaries}
+summary(d1)
+head(d1)
+```
+
+## Questions/Hypotheses to be addressed
+Ultimately, I would like to explore a few questions: 
+  1. Has crime truly dropped, or is it expected to rise again as the year progresses? 
+  2. Has the homicide rate dropped with crime? 
+  3. Has the homicide rate been a problem for long time, or was it truly an emerging problem last year?
+  
+
+
+
+
+{{< pagebreak >}}
+
+
+# Methods 
+
+_Describe your methods. That should describe the data, the cleaning processes, and the analysis approaches. You might want to provide a shorter description here and all the details in the supplement._
+
+
+## Schematic of workflow
+
+
+```{r}
+
+```
+
+
+## Data aquisition
+
+
+## Statistical analysis
+
+
+
+{{< pagebreak >}}
+
+
+# Results
+
+## Exploratory/Descriptive analysis
+
+
+```{r}
+
+```
+
+
+
+## Basic statistical analysis
+
+
+
+@fig-result shows a scatterplot figure produced by one of the R scripts.
+
+```{r}
+```
+
+
+## Full analysis
+
+
+
+```{r}
+
+```
+
+
+{{< pagebreak >}}
+
+
+# Discussion
+
+## Summary and Interpretation
+
+
+## Strengths and Limitations
+
+
+## Conclusions
+
+
+
+
+{{< pagebreak >}}
+
+# References
+
+
+
