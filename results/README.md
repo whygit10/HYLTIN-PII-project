@@ -1,7 +1,3 @@
-# results
-
-This folder and subfolders contain results produced by the code, such as figures and tables, and other files.
-
-A special folder for large files exists. This folder is set in .gitignore to be ignored when pushing/pulling. See the readme in that folder for details.
-
-Structure the folders inside `results` such that they make sense for your specific analysis. Provide enough documentation that someone can understand what you are doing and what goes where. `readme.md` files inside each folder are a good idea.
+version https://git-lfs.github.com/spec/v1
+oid sha256:af34480139d4c07cc5461f77b5018fed1503265b28742a16e33b068bc767d1b0
+size 520
