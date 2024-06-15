@@ -15,8 +15,7 @@ csl: ../../assets/apa.csl
 
 ```{r Setup, echo=FALSE, message=FALSE}
 # load a few R packages
-library(here)
-library(knitr)
+pacman::p_load(here, knitr, tidyverse)
 ```
 
 # Summary/Abstract
@@ -52,6 +51,33 @@ Ultimately, I would like to explore a few questions:
   2. Has the homicide rate dropped with crime? 
   3. Has the homicide rate been a problem for long time, or was it truly an emerging problem last year?
   
+```{r}
+d1 %>% group_by(Occurred.Date) %>% 
+  summarize(
+  cnt = n()
+) %>% as.data.frame() %>% 
+  ggplot(mapping = aes(x=Occurred.Date, y=cnt)) +
+  geom_line()
+```
+```{r}
+d1 %>% 
+  mutate(years = year(Occurred.Date),
+         years = as.character(years)
+         ) %>% 
+  filter(years == '2023' | years == '2022') %>% 
+  group_by(Family.Violence, Zip.Code, years) %>% 
+  summarize(cnt = n(), .groups = 'drop') %>% 
+  group_by(Zip.Code, years) %>% 
+  mutate(tot = sum(cnt)) %>% 
+  relocate(tot, .after = years) %>% 
+  mutate(Zip.Code = as.character(Zip.Code)) %>%
+  as.data.frame() %>% 
+  arrange(desc(tot)) %>% head(100) %>% 
+  ggplot(aes(fill=Family.Violence, x= reorder(Zip.Code,cnt), y=cnt)) +
+  geom_bar(position = 'stack', stat='identity') +
+  facet_wrap(~years) +
+  coord_flip()
+```
 
 
 
