@@ -16,6 +16,7 @@ csl: ../../assets/apa.csl
 ```{r Setup, echo=FALSE, message=FALSE}
 # load a few R packages
 pacman::p_load(here, knitr, tidyverse)
+theme_set(theme_minimal())
 ```
 
 # Summary/Abstract
