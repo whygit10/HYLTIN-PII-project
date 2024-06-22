@@ -15,7 +15,7 @@ csl: ../../assets/apa.csl
 
 ```{r Setup, echo=FALSE, message=FALSE}
 # load a few R packages
-pacman::p_load(here, knitr, tidyverse)
+pacman::p_load(here, knitr, tidyverse, skimr)
 theme_set(theme_minimal())
 ```
 
@@ -39,6 +39,7 @@ The raw data has several data and time fields, many of which are character strin
 
 ```{r Load Processed Data}
 d1 <- readRDS(here('data','processed-data','processedcrime.rds'))
+zips <- read_csv(here('data','raw-data','austin-zip-codes.csv'))
 ```
 
 ```{r Quick Summaries}
@@ -51,36 +52,6 @@ Ultimately, I would like to explore a few questions:
   1. Has crime truly dropped, or is it expected to rise again as the year progresses? 
   2. Has the homicide rate dropped with crime? 
   3. Has the homicide rate been a problem for long time, or was it truly an emerging problem last year?
-  
-```{r}
-d1 %>% group_by(Occurred.Date) %>% 
-  summarize(
-  cnt = n()
-) %>% as.data.frame() %>% 
-  ggplot(mapping = aes(x=Occurred.Date, y=cnt)) +
-  geom_line()
-```
-```{r}
-d1 %>% 
-  mutate(years = year(Occurred.Date),
-         years = as.character(years)
-         ) %>% 
-  filter(years == '2023' | years == '2022') %>% 
-  group_by(Family.Violence, Zip.Code, years) %>% 
-  summarize(cnt = n(), .groups = 'drop') %>% 
-  group_by(Zip.Code, years) %>% 
-  mutate(tot = sum(cnt)) %>% 
-  relocate(tot, .after = years) %>% 
-  mutate(Zip.Code = as.character(Zip.Code)) %>%
-  as.data.frame() %>% 
-  arrange(desc(tot)) %>% head(100) %>% 
-  ggplot(aes(fill=Family.Violence, x= reorder(Zip.Code,cnt), y=cnt)) +
-  geom_bar(position = 'stack', stat='identity') +
-  facet_wrap(~years) +
-  coord_flip()
-```
-
-
 
 
 {{< pagebreak >}}
@@ -152,6 +123,12 @@ _Describe your methods. That should describe the data, the cleaning processes, a
 
 ## Conclusions
 
+```{r sandbox}
+ggplot() +
+    geom_sf(aes(fill = zip.code), data = zips2, inherit.aes = F, size = 0, alpha = 0.6, geom = zips2$the_geom) +
+    coord_sf(ndiscr = F) +
+    theme(legend.position = "none")
+```
 
 
 

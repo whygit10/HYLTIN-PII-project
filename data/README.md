@@ -1,3 +1,7 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:29143249bb4eefaf6c491c709f4f72826fe0e3802b72108364ed8bae75832409
-size 1733
+# data
+
+The folders inside this folder contains all data at various stages.
+
+This data is being loaded/manipulated/changed/saved with code from the `code` folders.
+
+Data placed in the `raw-data` folder is unchanged from when it was acquired, it has not and will not be edited. Once I have processed the data it will be saved separately in the `processed-data` folder.

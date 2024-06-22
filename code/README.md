@@ -1,3 +1,3 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a27e4e98a22f1964dda1b44a48c7d7147a74169f78a2a969382e1816d67f216c
-size 993
+# code
+
+This folder will contain all code for processing, exploratory work, and analysis. The `processing-code` folder contains code to clean and save the raw data to a processed data file in the `data -> processed-data` folder. The `eda-code` folder will contain general exploratory analysis, as well as some work in statistical analysis, at least until the models get more complicated. This also means the `analysis-code` folder is mostly empty, for now.

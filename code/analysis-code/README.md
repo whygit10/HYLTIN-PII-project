@@ -1,3 +1,3 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:42b3fdbb26942de37609a3830da4f8a29e4e271b8e119964f4d18a7a4587c028
-size 150
+# analysis-code
+
+Retaining this folder from the original template, however I am currently leaning toward keeping the statistical analysis in the eda file. I may change my mind if I end up creating more complex models.
