@@ -151,7 +151,7 @@ d1 %>%
   mutate(years = year(Occurred.Date),
          years = as.character(years)
          ) %>% 
-  filter(years == '2023' | years == '2022') %>% 
+  filter(years == '2003' | years == '2022') %>% 
   group_by(Family.Violence, Zip.Code, years) %>% 
   summarize(cnt = n(), .groups = 'drop') %>% 
   group_by(Zip.Code, years) %>% 
