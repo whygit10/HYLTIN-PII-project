@@ -179,6 +179,117 @@ There are a few string variables that may be worth using for the analysis. Some 
  
 Parsing out these string variables will likely be more of a cognitive load than the others would, so I will hold off on doing so for now. Once I am further along with the EDA I will have a better idea of what I want to be looking for within these variables anyway.
 
+### And We're Back
+
+The string variable `Highest.Offense.Description` was just too rich to pass up. It would make for an excellent categorical variable however there are over 400 categories going off the variable as-is. `UCR.Category` is a very nice alternative with only a few levels to the category, but the field is mostly empty due to the nature of the variable. It represent an FBI Categorization known as Uniform Crime Reporting (UCR) for the most serious of crimes. So I decided to take the matter into my own hands. Number one, I would create a new field that categorizes the crime myself, based on categorizations in the UCR program. If the observation had values in the UCR field, I would take that one, if it did not, I impute a category based on the description in the Highest Offense Description field. This was mostly done through brute force, with string detection and research in two places, the [FBI UCR archive](https://ucr.fbi.gov/crime-in-the-u.s/2019/crime-in-the-u.s.-2019/topic-pages/offense-definitions) (2019 was not the only year that had information on the categorizations but it was the most in a quick reference format), and the [Texas Capitol Statutes website](https://statutes.capitol.texas.gov/). I feel the need to address this up front, I am absolutely not a criminologist, these categorizations are solely for the sake of making my analysis easier. I think of this as grouping the crime descriptions from the perspective of a layman, me, because ultimately the average person observing crime statistics will roughly as little knowledge about them as I do. An expert could and would do a much better job than I did, but that wasn't readily available so I worked with what I had. Famous last words of an analyst.
+```{r}
+unique(d2$Category.Description) %>% as.data.frame()
+unique(d2[c('Category.Description','Highest.Offense.Description')]) %>% as.data.frame()
+```
+
+```{r}
+UCRCats <- d2 %>% filter(Category.Description != '') %>% select(Category.Description) %>% unique()
+row.names(UCRCats) <- NULL
+UCRCats <- UCRCats[c(7,1,4,5,6,3,2),]
+row.names(UCRCats) <- NULL
+
+defCats <- rbind(CHILD = str_flatten(c('CHILD', 'MINOR', 'TRUANCY', 'NONSUPPORT'), collapse = '|') # Sex Offense involving a Child, Child Abuse/ Endangerment, Injury/Harm of Vulnerable Persons*
+                 ,HARASSMENT = str_flatten(c('HARASSMENT', 'PROWLER', 'STALKING'), collapse = '|') # General Harassment
+                 ,'SEX OFFENSE'= str_flatten(c('SEX', 'INVASIVE', 'INTIMATE', 'PROSTITUTION', 'OBSC', 'ADULT', 'BESTIALITY', 'INDECEN', 'ENTIC', 'PORN', 'SOLICITATION OF', 'GROOMING'), collapse = '|') # Sexual Offense
+                 ,'DISORDERLY CONDUCT' = str_flatten(c('DOC', 'LEWD', 'URINATING', 'RECKLESS CONDUCT', 'ILLUMIN', 'CORPSE', 'ANIMAL', 'RIOT', 'PROCESSION'), collapse = '|') #Disorderly Conduct
+                 ,VOCO = str_flatten(c('VOCO', 'ORDINANCE', 'CURFEW', 'CAMP', 'AMPLIFIED', 'GLASS', 'CITY ORD'), collapse = '|') # Violation of City Ordinance
+                 ,'SIMPLE ASSAULT' = str_flatten(c('ASSAULT','ASLT$', 'ASSLT', 'PROD', 'ATTACK BY DOG', 'VIOLENCE', 'HAZING', 'SUICIDE', 'CONFRONT'), collapse = '|') # Simple Assault/ ASSAULTIVE
+                 ,TRESPASSING = str_flatten(c('TRESPASS', 'LOITER', 'SLEEP', 'BEG'), collapse = '|') # TRESPASSING
+                 ,'LARGE SCALE THREAT' = str_flatten(c('THREAT'), collapse = '|') # Large Scale Threat
+                 ,'GENERAL DISTURBANCE' = str_flatten(c('DISTURBANCE'), collapse = '|') # General Disturbance
+                 ,'DRUG RELATED' = str_flatten(c('DRUG', 'SUB', 'MARIJUANA', 'INHALANT', 'TOBACCO', 'PRESCRIPTION'), collapse = '|') #Drug Related
+                 ,'FRAUD' = str_flatten(c('FRAUD', 'FALSE', 'IMPERSON', 'FORGE', 'COUNTERFEITING', 'TAMPER', 'LABEL', 'PIGEON', 'MEDICINE', 'NAME'), collapse = '|') #Fraud, Unlawful Deception
+                 ,'ALCOHOL RELATED' = str_flatten(c('ALCOHOL', 'LIQ', 'DWI', 'DUI', 'WHILE INTOX', 'BWI'), collapse = '|') # Alcohol Related
+                 ,'HARM OF VULNERABLE PERSONS' = str_flatten(c('INJ', 'ELDER'), collapse = '|') #Injury/Harm of Vulnerable Persons*
+                 ,'NON-COMPLIANCE' = str_flatten(c('WARR', 'BAIL', 'IDENTIFY', 'PROBATION', 'INTER', '911', 'ARREST', 'EVAD', 'PERJURY', 'PAROLE','RETALIATION', 'ESCAPE', 'HINDERING', 'BOND', 'CONTEMPT'), collapse = '|') # Warrant, Non Compliance
+                 ,'CRIMINAL MISCHIEF' = str_flatten(c('MISCHIEF', 'ARSON', 'DAMAGE', 'GRAFFITI', 'DESECRATION'), collapse = '|') # CRIMINAL MISCHIEF
+                 ,'UNLAWFUL RESTRAINT' = str_flatten(c('KIDNAP', 'RESTRAINT'), collapse = '|') # Unlawful Restraint
+                 ,'WEAPON RELATED' = str_flatten(c('WEAPON', 'FIREARM', 'EXPLOSIVE', 'UCW', 'KNIFE', 'CARRY', 'HANDGUN'), collapse = '|') # WEAPON RELATED
+                 ,'PROTECTIVE ORDER' = str_flatten(c('ORDER'), collapse = '|') #PROTECTIVE/ RESTRAINING ORDER
+                 ,'FINANCIAL CRIME' = str_flatten(c('CRED', 'DEBIT', 'MONEY', 'BANK'), collapse = '|') # FINANCIAL CRIME
+                 ,LITTERING = str_flatten(c('LITTER', 'DUMP', 'WASTE', 'REFRIGERATOR'), collapse = '|') #LITTERING
+                 ,'CRIMINAL CONSPIRACY' = str_flatten(c('CRIMINAL SOLICITATION', 'ABATE', 'ORGANIZED', 'CONSPIR'), collapse = '|') # CRIMINAL CONSPIRACY
+                 ,'ABUSE OF OFFICE' = str_flatten(c('OFFICIAL', 'PRISONER'), collapse = '|') # ABUSE OF OFFICE
+                 ,'GAMBLING RELATED' = str_flatten(c('GAMBL'), collapse = '|') # GAMBLING RELATED
+                 ,THEFT = str_flatten(c('RENTAL CAR'), collapse = '|')# THEFT
+                 ,MURDER = str_flatten(c('MANSLAUGHTER', 'HOMICIDE'), collapse = '|') # MURDER (MANSLAUGHTER INCLUDED BECAUSE THAT'S HOW FBI CATS)
+                 ,BRIBERY = str_flatten(c('BRIBE', 'COERCION OF PUBLIC SERVANT', 'GIFT'), collapse = '|') # BRIBERY
+                 ,OTHER = str_flatten(c('IMMIGRATION', 'ALIEN', 'OTHER', 'DISRUPTION OF CLASSES', 'AIRPORT', 'INSTRUMENT','SCHOOLS', 'MASSAGE', 'WATER', 'AWOL', 'DESERTION', 'RENDER'), collapse = '|')# OTHER
+                 )%>% as.data.frame()
+defCats$Cat <- rownames(defCats)
+rownames(defCats) <- NULL  
+colnames(defCats) <- c('strSearch', 'Cats')
+
+d3 <- d2 %>% 
+    mutate(Crime.Category = if_else(Category.Description == '', 
+                                    str_extract(Highest.Offense.Description, str_flatten(toupper(UCRCats), collapse = '|')), 
+                                    toupper(Category.Description)
+                                    )
+          ,Crime.Category = if_else(is.na(Crime.Category),
+                                    case_when(
+                                      str_detect(Highest.Offense.Description,defCats[1,1]) == TRUE ~ defCats[1,2],
+                                      str_detect(Highest.Offense.Description,defCats[2,1]) == TRUE ~ defCats[2,2],
+                                      str_detect(Highest.Offense.Description,defCats[3,1]) == TRUE ~ defCats[3,2],
+                                      str_detect(Highest.Offense.Description,defCats[4,1]) == TRUE ~ defCats[4,2],
+                                      str_detect(Highest.Offense.Description,defCats[5,1]) == TRUE ~ defCats[5,2],
+                                      str_detect(Highest.Offense.Description,defCats[6,1]) == TRUE ~ defCats[6,2],
+                                      str_detect(Highest.Offense.Description,defCats[7,1]) == TRUE ~ defCats[7,2],
+                                      str_detect(Highest.Offense.Description,defCats[8,1]) == TRUE ~ defCats[8,2],
+                                      str_detect(Highest.Offense.Description,defCats[9,1]) == TRUE ~ defCats[9,2],
+                                      str_detect(Highest.Offense.Description,defCats[10,1]) == TRUE ~ defCats[10,2],
+                                      str_detect(Highest.Offense.Description,defCats[11,1]) == TRUE ~ defCats[11,2],
+                                      str_detect(Highest.Offense.Description,defCats[12,1]) == TRUE ~ defCats[12,2],
+                                      str_detect(Highest.Offense.Description,defCats[13,1]) == TRUE ~ defCats[13,2],
+                                      str_detect(Highest.Offense.Description,defCats[14,1]) == TRUE ~ defCats[14,2],
+                                      str_detect(Highest.Offense.Description,defCats[15,1]) == TRUE ~ defCats[15,2],
+                                      str_detect(Highest.Offense.Description,defCats[16,1]) == TRUE ~ defCats[16,2],
+                                      str_detect(Highest.Offense.Description,defCats[17,1]) == TRUE ~ defCats[17,2],
+                                      str_detect(Highest.Offense.Description,defCats[18,1]) == TRUE ~ defCats[18,2],
+                                      str_detect(Highest.Offense.Description,defCats[19,1]) == TRUE ~ defCats[19,2],
+                                      str_detect(Highest.Offense.Description,defCats[20,1]) == TRUE ~ defCats[20,2],
+                                      str_detect(Highest.Offense.Description,defCats[21,1]) == TRUE ~ defCats[21,2],
+                                      str_detect(Highest.Offense.Description,defCats[22,1]) == TRUE ~ defCats[22,2],
+                                      str_detect(Highest.Offense.Description,defCats[23,1]) == TRUE ~ defCats[23,2],
+                                      str_detect(Highest.Offense.Description,defCats[24,1]) == TRUE ~ defCats[24,2],
+                                      str_detect(Highest.Offense.Description,defCats[25,1]) == TRUE ~ defCats[25,2],
+                                      str_detect(Highest.Offense.Description,defCats[26,1]) == TRUE ~ defCats[26,2],
+                                      str_detect(Highest.Offense.Description,defCats[27,1]) == TRUE ~ defCats[27,2],
+                                      .default = Crime.Category
+                                    ),
+                                    Crime.Category
+          )
+          ,Crime.Category = if_else(Crime.Category == 'CHILD',
+                                    case_when(
+                                      str_detect(Highest.Offense.Description,defCats[3,1]) == TRUE ~ 'SEX OFFENSE INVOLVING A CHILD',
+                                      .default = 'HARM OF VULNERABLE PERSONS'
+                                    ),
+                                    Crime.Category
+                                    )
+          ,Crime.Category = if_else(Highest.Offense.Description == 'JUSTIFIED HOMICIDE', 'JUSTIFIED HOMICIDE', Crime.Category)
+          )
+d3 %>% select(Highest.Offense.Description, Category.Description, Crime.Category) %>% head(100)
+d3 %>% dim()
+
+d3 %>% group_by(Crime.Category, Category.Description) %>% summarize(
+  cnt = n()
+)
+
+d3 %>% filter(!is.na(Crime.Category)) %>%
+  #,Category.Description == '') %>% 
+  #select(Crime.Category, Highest.Offense.Description) %>% 
+  group_by(Crime.Category) %>%  #, Highest.Offense.Description) %>% 
+  summarize(
+    cnt = n()
+  ) %>% 
+  arrange(by = cnt)
+```
+
+
 ### Tidied Up
 
 All done, data is clean now.
@@ -186,7 +297,7 @@ All done, data is clean now.
 Let's assign at the end to some final variable, this makes it easier to add further cleaning steps above.
 
 ```{r}
-processeddata <- d2
+processeddata <- d3
 ```
 
 # Save data
@@ -196,37 +307,4 @@ Finally, we save the clean data as RDS file.
 ```{r}
 save_data_location <- here("data","processed-data","processed-crime.rds")
 saveRDS(processeddata, file = save_data_location)
-```
-
-
-```{r Sandbox, echo=FALSE}
-#rawdata %>% filter(Occurred.Date.Time == '')
-
-rawdata %>% mutate(
-  test = (str_sub(as.character(Occurred.Time), -2, -1)
-          %>% as.numeric()),
-  Occurred.Date = mdy(Occurred.Date)
-  ,Report.Date = mdy(Report.Date)
-  ,Occurred.Date.Time = parse_date_time(Occurred.Date.Time,'%m/%d/%Y %I:%M:%S %p')
-  ,Report.Date.Time = parse_date_time(Report.Date.Time,'%m/%d/%Y %I:%M:%S %p')
-  ,Clearance.Date = mdy(Clearance.Date)
-  ) %>% mutate(
-    Occurred.Time = if_else(
-      is.na(Occurred.Time) | test >= 60, 
-      if_else(
-        Occurred.Date == Report.Date,
-        if_else(
-          is.na(Report.Time), 
-          2359, Report.Time
-          ), 2359
-        ), if_else(
-          Occurred.Time == 2400, 
-          2359, Occurred.Time
-          ) 
-      ) %>% as.character()
-    ) %>% mutate(
-      Occurred.Time = paste0('000',Occurred.Time,'00') %>% 
-        str_sub(.,-6,-1) %>% 
-        parse_time('%H%M%S')
-      ) %>% select(-test)
 ```
