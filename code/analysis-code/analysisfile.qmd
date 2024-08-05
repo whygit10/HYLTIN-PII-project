@@ -189,6 +189,7 @@ gtsave(AvF, 'actual-vs-forecast.html', here('results', 'figures', 'static-plots'
 ```
 
 ```{r}
+theme_set(theme_gray())
 aggresid <- group_fit %>% filter(is_aggregated(Crime.Category)) %>% select(td) %>% gg_tsresiduals()
 
 aggresid
@@ -196,6 +197,7 @@ ggsave(here('results', 'figures', 'static-plots', 'crime-resid.png'), aggresid)
 ```
 
 ```{r}
+theme_set(theme_gray())
 murdresid <- group_fit %>% filter(Crime.Category == 'MURDER') %>% select(td) %>% gg_tsresiduals()
 
 murdresid
@@ -203,6 +205,7 @@ ggsave(here('results', 'figures', 'static-plots', 'murd-resid.png'), murdresid)
 ```
 
 ```{r}
+theme_set(theme_minimal())
 agglb <- augment(filter(group_fit, is_aggregated(Crime.Category))) %>% 
   features(.resid, ljung_box, l = 24) %>% gt()
 
@@ -211,6 +214,7 @@ gtsave(agglb, 'aggregated-ljung.html', here('results', 'figures', 'static-plots'
 ```
 
 ```{r}
+theme_set(theme_minimal())
 murdlb <- augment(filter(group_fit, Crime.Category == 'MURDER')) %>% 
   features(.resid, ljung_box, l = 24) %>% gt()
 

@@ -1,3 +1,6 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8b8483003e7ebb5a73973a5ca3aeeaf4f207b87810017ee8e82dc1a4c8d07e2c
-size 179
+# output
+
+Folder for output files from models or other analyses. These need to be
+further processed into figures or tables for presentation.
+
+There's currently no example present.

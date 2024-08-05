@@ -111,7 +111,12 @@ dayline <- d1 %>% group_by(Occurred.Date) %>%
 ) %>% as.data.frame() %>% 
   ggplot(mapping = aes(x=Occurred.Date, y=cnt)) +
   geom_line() +
-  labs(title = 'Austin Crime Over Time', x = 'Time of Occurence (by day)', y = 'Count')
+  labs(title = 'Austin Crime Over Time', x = 'Time of Occurence (by day)', y = 'Count') +
+  theme(panel.background = element_rect(fill = 'white',
+                                        color = 'white'),
+        plot.background = element_rect(fill = 'white',
+                                        color = 'white')
+        )
 
 dayline
 
@@ -129,7 +134,12 @@ monthline <- d1 %>% filter(Occurred.Date <= '2024-03-31') %>%
 ) %>% as.data.frame() %>% 
   ggplot(mapping = aes(x=Occurred.Date, y=cnt)) +
   geom_line() +
-  labs(title = 'Austin Crime Over Time', x = 'Time of Occurence (by month)', y = 'Count')
+  labs(title = 'Austin Crime Over Time', x = 'Time of Occurence (by month)', y = 'Count') +
+  theme(panel.background = element_rect(fill = 'white',
+                                        color = 'white'),
+        plot.background = element_rect(fill = 'white',
+                                        color = 'white')
+        )
 
 monthline
 
@@ -150,7 +160,12 @@ murdline <- d1 %>% filter(Occurred.Date <= '2024-03-31', Crime.Category == 'MURD
 ) %>% as.data.frame() %>% 
   ggplot(mapping = aes(x=Occurred.Date, y=cnt)) +
   geom_line() +
-  labs(title = 'Austin Murder Over Time', x = 'Time of Occurence (by month)', y = 'Count')
+  labs(title = 'Austin Murder Over Time', x = 'Time of Occurence (by month)', y = 'Count') +
+  theme(panel.background = element_rect(fill = 'white',
+                                        color = 'white'),
+        plot.background = element_rect(fill = 'white',
+                                        color = 'white')
+        )
 
 murdline
 
