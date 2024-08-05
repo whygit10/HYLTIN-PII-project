@@ -238,13 +238,33 @@ Figure 1 below is the corresponding aggregated time series plot.
 While we can see a general trend, the plot is rather dense since there are so many points plotted along the x-axis.
 If we want to do anything like isolating down to specific crimes like homicide, we will needed to aggregate at less fine of a grain, otherwise we will have too many intervals with 0 values for the observations.
 
-![Fig 1](/Users/Hylti/OneDrive/Documents/School/Practicum II/HYLTIN-PII-project/results/figures/static-plots/crime-by-day.png)  
+```{r}
+#| label: fig-1
+#| fig-cap: "Crime Forecast Residual Plots"
+#| echo: FALSE
+knitr::include_graphics(here("results","figures",'static-plots',"crime-by-day.png"))
+```
+
 Figure 2 below is the corresponding time series plot aggregated over each month.
 We still see a similar rise and fall trend like we did in the daily plot, but it is more pronounced since there are fewer outliers like there were in the daily plot.
 Outside of the overall trend, we can also see some potential patterns like a seasonal trend, and a change in the overall trend around 2018 until around 2020 where it briefly increases again before returning to a general decrease.  
-![Fig 2](/Users/Hylti/OneDrive/Documents/School/Practicum II/HYLTIN-PII-project/results/figures/static-plots/crime-by-month.png)  
+
+```{r}
+#| label: fig-2
+#| fig-cap: "Crime Forecast Residual Plots"
+#| echo: FALSE
+knitr::include_graphics(here("results","figures",'static-plots',"crime-by-month.png"))
+```
+
 Jumping ahead just a bit, after performing the simple lexicon based classification and properly identifying murder crimes, we can isolate to those crimes specifically for a time series plot. Figure 3 is exactly this, and we can see the trend is very different from what is seen in the overall time-series plot. For the most part, the rate of murder is relatively low up through 2015, and it is around 2016 that we see it spike and then slowly increase up until about 2022, where it then starts to slow back down.  
-![Fig 3](/Users/Hylti/OneDrive/Documents/School/Practicum II/HYLTIN-PII-project/results/figures/static-plots/murder-by-time.png)  
+
+```{r}
+#| label: fig-3
+#| fig-cap: "Monthly Murder Line Plot"
+#| echo: FALSE
+knitr::include_graphics(here("results","figures",'static-plots',"murder-by-time.png"))
+```
+
 These changes are interesting, primarily because we see the same shift before 2020 across overall crime and murder, but the number of murders is too small to be the primary driver in the overall crime trend. It's also interesting because of the way the increase in murders start happening before the overall increase, and continues after the overall has started to decrease again. These may be caused by correlated factors like population, economic, or political factors, that the rate of murder could be more sensitive to than other crimes are. Furthermore, because the rate of murder is so low (relative to other types of crime), it's likely that the variance in the trend is always going to be more sensitive to external factors. Once again the goal of this analysis is not intended to explain the why, but I think these observations could make for some good future studies into the potential causes or correlations. For now, the main question that these visuals bring me are the apparent trends; are they actually material, is the decrease seen the result of a change in the actual rate, or merely happenstance and we can expect the rate of murder to increase in future months? Before I attempt to explore this question, I want to see what variables might help me to explain it. The last chart considers the type of crime, which we will see in a moment, but it does not consider the location. For location, I have created a visualization based on Zip Code that I think can be revealing.
 
 ```{r}
@@ -288,7 +308,7 @@ Ultimately this turned out to be the right call, because the FBI UCR website ref
 All said, a more summarized version of this chart is below, complete with sparklines as well to give an idea of the rate over time of each category.
 
 ```{=html}
-<iframe src="/Users/Hylti/OneDrive/Documents/School/Practicum II/HYLTIN-PII-project/results/figures/html-widgets/new-cat-table.html" width="100%" height="800px" align="centered"></iframe>
+<iframe src="/HYLTIN-PII-project/results/figures/html-widgets/new-cat-table.html" width="100%" height="800px" align="centered"></iframe>
 ```
 \
 This table is intended to give a general idea of the change of each crime over time and the general quantity relative to others.
@@ -318,10 +338,16 @@ We can see from the residual plots for All Crime that the fit is generally fair.
 Innovation residuals are mostly centered around 0, the ACF plot suggests no autocorrelation, and even the distribution of the residuals is pretty normal, though there is a high frequency at 0 and just below 0 that may be questionable.
 The Ljung-Box test was not found to be significant, meaning we can reject the null hypothesis that the residuals are distinguishable from white noise agreeing with our observations from the ACF plot.
 The most questionable aspect here is likely the heteroscedasticity of the residuals, which appears to decrease and then increase over time, but this is not a requirement for a good time series model.
-![Fig 4](/Users/Hylti/OneDrive/Documents/School/Practicum II/HYLTIN-PII-project/results/figures/static-plots/crime-resid.png)
+
+```{r}
+#| label: fig-4
+#| fig-cap: "Crime Forecast Residual Plots"
+#| echo: FALSE
+knitr::include_graphics(here("results","figures",'static-plots',"crime-resid.png"))
+```
 
 ```{=html}
-<iframe src="/Users/Hylti/OneDrive/Documents/School/Practicum II/HYLTIN-PII-project/results/figures/static-plots/aggregated-ljung.html" width="100%" height="250px" align="centered"></iframe>
+<iframe src="/HYLTIN-PII-project/results/figures/static-plots/aggregated-ljung.html" width="100%" height="250px" align="centered"></iframe>
 ```
 \
 It is not quite the same story regarding the residuals for murder.
@@ -329,18 +355,36 @@ The selected model for the frequency of murder is ARIMA(0,1,1)(0,0,1)~12~.
 The plot of the residuals over time is still mostly centered at zero but the variance is less steady than it was for all crime, increasing quite a bit in the last few years, which makes sense since that is when we started to see the rate of Murder increase.
 Two spikes in the ACF plot are found to be significant, but this is not terribly abormal since 24 spikes are plotted, and the Ljung-Box test results are also not found to be significant.
 The distribution of the residuals is the most questionable, it is fairly asymmetrical so it is unlikely to be normally distributed, but again this is less important than the requirements for uncorrelated and mean 0 residuals.
-![Fig 4](/Users/Hylti/OneDrive/Documents/School/Practicum II/HYLTIN-PII-project/results/figures/static-plots/murd-resid.png)
+
+```{r}
+#| label: fig-5
+#| fig-cap: "Murder Forecast Residual Plots"
+#| echo: FALSE
+knitr::include_graphics(here("results","figures",'static-plots',"murd-resid.png"))
+```
 
 ```{=html}
-<iframe src="/Users/Hylti/OneDrive/Documents/School/Practicum II/HYLTIN-PII-project/results/figures/static-plots/aggregated-ljung.html" width="100%" height="250px" align="centered"></iframe>
+<iframe src="/HYLTIN-PII-project/results/figures/static-plots/aggregated-ljung.html" width="100%" height="250px" align="centered"></iframe>
 ```
 \
 The plots below show these forecasts, the aggregation all crime and for murder, as well as two other crimes picked for their similarity to murder, Aggregated Assault and Unlawful Restraint (kidnapping and similar crimes).
 Aggravated Assault was chosen due to its similarity in how the crime is performed, and Unlawful Restraint was chosen due to the number of occurrences being similar to Murder.
 The plot for Murder is repeated enlarged for readability.
 
-![Fig 4](/Users/Hylti/OneDrive/Documents/School/Practicum II/HYLTIN-PII-project/results/figures/static-plots/crime-forecast.png)  
-![Fig 5](/Users/Hylti/OneDrive/Documents/School/Practicum II/HYLTIN-PII-project/results/figures/static-plots/murder-forecast.png)  
+```{r}
+#| label: fig-6
+#| fig-cap: "Monthly Crime Forecast"
+#| echo: FALSE
+knitr::include_graphics(here("results","figures",'static-plots',"crime-forecast.png"))
+```
+
+```{r}
+#| label: fig-7
+#| fig-cap: "Murder Forecast"
+#| echo: FALSE
+knitr::include_graphics(here("results","figures",'static-plots',"murder-forecast.png"))
+```
+
 From these forecasts, we can see that for overall crime the decrease observed earlier is expected to continue, however the confidence interval is quite wide so it could just as easily change course and begin to increase
 . For Murder, the decrease after the observed period is much less pronounced, but the confidence interval is much smaller
 . The difference in confidence interval is likely due to the smaller magnitude of crime counts compared to the aggregated model, and in this case the bounds are often not enough for more than one integer value between
@@ -350,7 +394,7 @@ From these forecasts, we can see that for overall crime the decrease observed ea
 .
 
 ```{=html}
-<iframe src="/Users/Hylti/OneDrive/Documents/School/Practicum II/HYLTIN-PII-project/results/figures/static-plots/actual-vs-forecast.html" width="100%" height="400px" align="centered"></iframe>
+<iframe src="/HYLTIN-PII-project/results/figures/static-plots/actual-vs-forecast.html" width="100%" height="400px" align="centered"></iframe>
 ```
 ## Interpretation and Conlusions
 
