@@ -308,7 +308,7 @@ Ultimately this turned out to be the right call, because the FBI UCR website ref
 All said, a more summarized version of this chart is below, complete with sparklines as well to give an idea of the rate over time of each category.
 
 ```{=html}
-<iframe src="/HYLTIN-PII-project/results/figures/html-widgets/new-cat-table.html" width="100%" height="800px" align="centered"></iframe>
+<iframe src="../../results/figures/html-widgets/new-cat-table.html" width="100%" height="800px" align="centered"></iframe>
 ```
 \
 This table is intended to give a general idea of the change of each crime over time and the general quantity relative to others.
@@ -347,7 +347,7 @@ knitr::include_graphics(here("results","figures",'static-plots',"crime-resid.png
 ```
 
 ```{=html}
-<iframe src="/HYLTIN-PII-project/results/figures/static-plots/aggregated-ljung.html" width="100%" height="250px" align="centered"></iframe>
+<iframe src="../../results/figures/static-plots/aggregated-ljung.html" width="100%" height="250px" align="centered"></iframe>
 ```
 \
 It is not quite the same story regarding the residuals for murder.
@@ -364,7 +364,7 @@ knitr::include_graphics(here("results","figures",'static-plots',"murd-resid.png"
 ```
 
 ```{=html}
-<iframe src="/HYLTIN-PII-project/results/figures/static-plots/aggregated-ljung.html" width="100%" height="250px" align="centered"></iframe>
+<iframe src="../../results/figures/static-plots/aggregated-ljung.html" width="100%" height="250px" align="centered"></iframe>
 ```
 \
 The plots below show these forecasts, the aggregation all crime and for murder, as well as two other crimes picked for their similarity to murder, Aggregated Assault and Unlawful Restraint (kidnapping and similar crimes).
@@ -394,7 +394,7 @@ From these forecasts, we can see that for overall crime the decrease observed ea
 .
 
 ```{=html}
-<iframe src="/HYLTIN-PII-project/results/figures/static-plots/actual-vs-forecast.html" width="100%" height="400px" align="centered"></iframe>
+<iframe src="../../results/figures/static-plots/actual-vs-forecast.html" width="100%" height="400px" align="centered"></iframe>
 ```
 ## Interpretation and Conlusions
 
