@@ -1,7 +1,9 @@
 # Overview
 
 This is a repository for my work on the project for my Practicum II course, as a part of MSDA program at UTSA.  
-This is an exploratory analysis regarding crime in Austin. I hope to gather insights about the trends of criminal activity that takes place within the city. Being this is intended as an exploratory analysis, there is not necessarily any particular goal or hypothesis I am looking to prove, however I would like this analysis to look at things like crime in relation to time, severity of crime and how it changes, and likely take things like location into consideration.
+This is an exploratory analysis regarding crime in Austin. I hope to gather insights about the trends of criminal activity that takes place within the city. Being this is intended as an exploratory analysis, there is not necessarily any particular goal or hypothesis I am looking to prove, however I would like this analysis to look at things like crime in relation to time, severity of crime and how it changes, and likely take things like location into consideration. The repository for this project can be found [here](https://github.com/whygit10/HYLTIN-PII-project), and the final output can be found on my github analytics [portfolio](https://whygit10.github.io/williamhyltin-P2-portfolio/).
+
+As a note, during the course of completing this project, my [original data source](https://data.austintexas.gov/Public-Safety/Crime-Reports/fdj4-gpfu/about_data) was deprecated. While I continued to work on the original data source, a [replacement](https://data.austintexas.gov/Public-Safety/NIBRS-Group-A-Offense-Crimes/i7fg-wrk5/about_data) was uploaded to the Austin Open Data portal, with different dimensions and assets.
 
 
 # Template structure and content
